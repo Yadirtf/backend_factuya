@@ -3,10 +3,10 @@ import { Document } from 'mongoose';
 
 @Schema({ _id: false })
 class TaxSubDoc {
-    @Prop() type: string;
-    @Prop() rate: number;
-    @Prop() base: number;
-    @Prop() amount: number;
+    @Prop({ required: true }) type: string;
+    @Prop({ required: true }) rate: number;
+    @Prop({ required: true }) base: number;
+    @Prop({ required: true }) amount: number;
 }
 
 @Schema({ _id: true })
@@ -35,13 +35,13 @@ export class InvoiceDocument extends Document {
     @Prop({ required: true }) subtotal: number;   // En centavos
     @Prop({ default: 0 }) totalTax: number;
     @Prop({ required: true }) total: number;
-    @Prop() cufe?: string;
-    @Prop() qrCode?: string;
-    @Prop() xmlPath?: string;
-    @Prop() dianResponse?: string;
+    @Prop({ type: String }) cufe?: string;
+    @Prop({ type: String }) qrCode?: string;
+    @Prop({ type: String }) xmlPath?: string;
+    @Prop({ type: String }) dianResponse?: string;
     @Prop({ required: true }) issueDate: Date;
-    @Prop() dueDate?: Date;
-    @Prop() notes?: string;
+    @Prop({ type: Date }) dueDate?: Date;
+    @Prop({ type: String }) notes?: string;
 }
 
 export const InvoiceSchema = SchemaFactory.createForClass(InvoiceDocument);

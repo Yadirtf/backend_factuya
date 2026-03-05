@@ -10,7 +10,7 @@ export class UserDocument extends Document {
     @Prop({ required: true }) lastName: string;
     @Prop({ required: true, enum: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR', 'ACCOUNTANT', 'VIEWER'] }) role: string;
     @Prop({ default: true }) isActive: boolean;
-    @Prop({ default: null }) refreshToken: string | null;
+    @Prop({ type: String, default: null }) refreshToken: string | null;
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserDocument);

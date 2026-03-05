@@ -5,7 +5,7 @@ import { Document } from 'mongoose';
 export class CompanyDocument extends Document {
     @Prop({ required: true, unique: true, index: true }) nit: string;
     @Prop({ required: true }) businessName: string;
-    @Prop() tradeName?: string;
+    @Prop({ type: String }) tradeName?: string;
     @Prop({ required: true }) email: string;
     @Prop({ required: true }) phone: string;
     @Prop({ required: true }) address: string;
