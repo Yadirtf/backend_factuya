@@ -1,0 +1,35 @@
+﻿[96msrc/application/use-cases/invoice/invoice.use-case.ts[0m:[93m14[0m:[93m31[0m - [91merror[0m[90m TS2307: [0mCannot find module '@interfaces/xml-generator.interface' or its corresponding type declarations.
+System.Management.Automation.RemoteException
+[7m14[0m import { IXmlGenerator } from '@interfaces/xml-generator.interface';
+[7m  [0m [91m                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/application/use-cases/invoice/invoice.use-case.ts[0m:[93m15[0m:[93m32[0m - [91merror[0m[90m TS2307: [0mCannot find module '@interfaces/signer.interface' or its corresponding type declarations.
+System.Management.Automation.RemoteException
+[7m15[0m import { ISignerService } from '@interfaces/signer.interface';
+[7m  [0m [91m                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/application/use-cases/invoice/invoice.use-case.ts[0m:[93m16[0m:[93m29[0m - [91merror[0m[90m TS2307: [0mCannot find module '@interfaces/dian-client.interface' or its corresponding type declarations.
+System.Management.Automation.RemoteException
+[7m16[0m import { IDianClient } from '@interfaces/dian-client.interface';
+[7m  [0m [91m                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/infrastructure/repositories/certificate.repository.impl.ts[0m:[93m6[0m:[93m37[0m - [91merror[0m[90m TS2307: [0mCannot find module '../schemas/certificate.schema' or its corresponding type declarations.
+System.Management.Automation.RemoteException
+[7m6[0m import { CertificateDocument } from '../schemas/certificate.schema';
+[7m [0m [91m                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/infrastructure/repositories/company.repository.impl.ts[0m:[93m6[0m:[93m33[0m - [91merror[0m[90m TS2307: [0mCannot find module '../schemas/company.schema' or its corresponding type declarations.
+System.Management.Automation.RemoteException
+[7m6[0m import { CompanyDocument } from '../schemas/company.schema';
+[7m [0m [91m                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/infrastructure/repositories/customer.repository.impl.ts[0m:[93m7[0m:[93m34[0m - [91merror[0m[90m TS2307: [0mCannot find module '../schemas/customer.schema' or its corresponding type declarations.
+System.Management.Automation.RemoteException
+[7m7[0m import { CustomerDocument } from '../schemas/customer.schema';
+[7m [0m [91m                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/infrastructure/repositories/invoice.repository.impl.ts[0m:[93m12[0m:[93m33[0m - [91merror[0m[90m TS2307: [0mCannot find module '../schemas/invoice.schema' or its corresponding type declarations.
+System.Management.Automation.RemoteException
+[7m12[0m import { InvoiceDocument } from '../schemas/invoice.schema';
+[7m  [0m [91m                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/infrastructure/repositories/user.repository.impl.ts[0m:[93m7[0m:[93m30[0m - [91merror[0m[90m TS2307: [0mCannot find module '../schemas/user.schema' or its corresponding type declarations.
+System.Management.Automation.RemoteException
+[7m7[0m import { UserDocument } from '../schemas/user.schema';
+[7m [0m [91m                             ~~~~~~~~~~~~~~~~~~~~~~~~[0m
+System.Management.Automation.RemoteException
+Found 8 error(s).
+
