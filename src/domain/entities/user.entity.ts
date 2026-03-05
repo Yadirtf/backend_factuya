@@ -1,16 +1,14 @@
 import { Email } from '../value-objects/email.vo';
-import { UserRole } from '../enums/user-role.enum';
 import { DomainException } from '@shared/exceptions/domain.exception';
 
 export class User {
     private constructor(
         public readonly id: string,
         public readonly companyId: string,
-        private _email: Email,
+        public readonly personId: string,
+        public readonly roleId: string,
+        private _email: Email, // Mantener email para búsqueda rápida/login
         private _passwordHash: string,
-        private _firstName: string,
-        private _lastName: string,
-        private _role: UserRole,
         private _isActive: boolean,
         private _refreshToken: string | null,
         public readonly createdAt: Date,
@@ -20,23 +18,18 @@ export class User {
     static create(params: {
         id: string;
         companyId: string;
+        personId: string;
+        roleId: string;
         email: string;
         passwordHash: string;
-        firstName: string;
-        lastName: string;
-        role?: UserRole;
     }): User {
-        if (!params.firstName?.trim() || !params.lastName?.trim()) {
-            throw new DomainException('First and last name are required');
-        }
         return new User(
             params.id,
             params.companyId,
+            params.personId,
+            params.roleId,
             Email.create(params.email),
             params.passwordHash,
-            params.firstName.trim(),
-            params.lastName.trim(),
-            params.role ?? UserRole.OPERATOR,
             true,
             null,
             new Date(),
@@ -47,11 +40,10 @@ export class User {
     static reconstitute(params: {
         id: string;
         companyId: string;
+        personId: string;
+        roleId: string;
         email: string;
         passwordHash: string;
-        firstName: string;
-        lastName: string;
-        role: UserRole;
         isActive: boolean;
         refreshToken: string | null;
         createdAt: Date;
@@ -60,11 +52,10 @@ export class User {
         return new User(
             params.id,
             params.companyId,
+            params.personId,
+            params.roleId,
             Email.create(params.email),
             params.passwordHash,
-            params.firstName,
-            params.lastName,
-            params.role,
             params.isActive,
             params.refreshToken,
             params.createdAt,
@@ -74,21 +65,19 @@ export class User {
 
     get email(): Email { return this._email; }
     get passwordHash(): string { return this._passwordHash; }
-    get firstName(): string { return this._firstName; }
-    get lastName(): string { return this._lastName; }
-    get fullName(): string { return `${this._firstName} ${this._lastName}`; }
-    get role(): UserRole { return this._role; }
+    get personId_ref(): string { return this.personId; }
+    get roleId_ref(): string { return this.roleId; }
     get isActive(): boolean { return this._isActive; }
     get refreshToken(): string | null { return this._refreshToken; }
     get updatedAt(): Date { return this._updatedAt; }
 
-    updateRole(role: UserRole): void {
-        this._role = role;
+    updateRefreshToken(token: string | null): void {
+        this._refreshToken = token;
         this._updatedAt = new Date();
     }
 
-    updateRefreshToken(token: string | null): void {
-        this._refreshToken = token;
+    updateRole(roleId: string): void {
+        (this as any).roleId = roleId; // Update the readonly property via casting if needed or change the prop to private with getter
         this._updatedAt = new Date();
     }
 
@@ -96,9 +85,5 @@ export class User {
         this._isActive = false;
         this._refreshToken = null;
         this._updatedAt = new Date();
-    }
-
-    hasRole(...roles: UserRole[]): boolean {
-        return roles.includes(this._role);
     }
 }

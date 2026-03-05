@@ -5,8 +5,11 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { UserRepository } from '@domain/repositories/user.repository';
 import { CompanyRepository } from '@domain/repositories/company.repository';
+import { PersonRepository, RoleRepository } from '@domain/repositories/person-role.repository';
 import { Company } from '@domain/entities/company.entity';
 import { User } from '@domain/entities/user.entity';
+import { Person } from '@domain/entities/person.entity';
+import { Role, Permission } from '@domain/entities/role.entity';
 import { UserRole } from '@domain/enums/user-role.enum';
 import { LoginDto, TokenResponseDto, RegisterCompanyDto } from '../../dtos/auth/auth.dto';
 import { TOKENS } from '@shared/constants/tokens';
@@ -18,12 +21,15 @@ export interface JwtPayload {
     companyId: string;
     role: UserRole;
     email: string;
+    personId: string;
 }
 
 @Injectable()
 export class LoginUseCase {
     constructor(
         @Inject(TOKENS.USER_REPOSITORY) private readonly userRepo: UserRepository,
+        @Inject(TOKENS.PERSON_REPOSITORY) private readonly personRepo: PersonRepository,
+        @Inject(TOKENS.ROLE_REPOSITORY) private readonly roleRepo: RoleRepository,
         private readonly jwtService: JwtService,
         private readonly config: ConfigService,
     ) { }
@@ -39,11 +45,19 @@ export class LoginUseCase {
             throw new UnauthorizedException('Invalid credentials');
         }
 
+        const person = await this.personRepo.findById(user.personId, user.companyId);
+        const role = await this.roleRepo.findById(user.roleId, user.companyId);
+
+        if (!person || !role) {
+            throw new DomainException('User profile or role not found');
+        }
+
         const payload: JwtPayload = {
             sub: user.id,
             companyId: user.companyId,
-            role: user.role,
+            role: role.code as any as UserRole,
             email: user.email.raw,
+            personId: person.id,
         };
 
         const accessToken = this.jwtService.sign(payload, {
@@ -65,9 +79,9 @@ export class LoginUseCase {
             user: {
                 id: user.id,
                 email: user.email.raw,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                role: user.role,
+                firstName: person.firstName,
+                lastName: person.lastName,
+                role: role.code as any, // Mantener compatibilidad con DTO si usa enum
                 companyId: user.companyId,
             },
         };
@@ -79,6 +93,8 @@ export class RegisterCompanyUseCase {
     constructor(
         @Inject(TOKENS.COMPANY_REPOSITORY) private readonly companyRepo: CompanyRepository,
         @Inject(TOKENS.USER_REPOSITORY) private readonly userRepo: UserRepository,
+        @Inject(TOKENS.PERSON_REPOSITORY) private readonly personRepo: PersonRepository,
+        @Inject(TOKENS.ROLE_REPOSITORY) private readonly roleRepo: RoleRepository,
     ) { }
 
     async execute(dto: RegisterCompanyDto): Promise<{ companyId: string; userId: string }> {
@@ -87,6 +103,7 @@ export class RegisterCompanyUseCase {
             throw new DomainException(`Company with NIT ${dto.nit} already exists`);
         }
 
+        // 1. Crear Compañía
         const company = Company.create({
             id: uuidv4(),
             nit: dto.nit,
@@ -102,17 +119,36 @@ export class RegisterCompanyUseCase {
         });
         const savedCompany = await this.companyRepo.create(company);
 
-        const passwordHash = await bcrypt.hash(dto.adminPassword, 12);
-        const admin = User.create({
+        // 2. Crear Rol Admin para la Compañía
+        const adminRole = Role.create({
             id: uuidv4(),
             companyId: savedCompany.id,
-            email: dto.adminEmail,
-            passwordHash,
+            name: 'Administrador',
+            code: 'ADMIN',
+            permissions: Object.values(Permission), // Full permissions for initial admin
+        });
+        const savedRole = await this.roleRepo.create(adminRole);
+
+        // 3. Crear Persona para el Admin
+        const person = Person.create({
+            id: uuidv4(),
+            companyId: savedCompany.id,
             firstName: dto.adminFirstName,
             lastName: dto.adminLastName,
-            role: UserRole.ADMIN,
         });
-        const savedUser = await this.userRepo.create(admin);
+        const savedPerson = await this.personRepo.create(person);
+
+        // 4. Crear Usuario (Credenciales)
+        const passwordHash = await bcrypt.hash(dto.adminPassword, 12);
+        const user = User.create({
+            id: uuidv4(),
+            companyId: savedCompany.id,
+            personId: savedPerson.id,
+            roleId: savedRole.id,
+            email: dto.adminEmail,
+            passwordHash,
+        });
+        const savedUser = await this.userRepo.create(user);
 
         return { companyId: savedCompany.id, userId: savedUser.id };
     }

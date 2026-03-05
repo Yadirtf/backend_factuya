@@ -9,10 +9,12 @@ export class CreateUserDto {
     @IsString() @IsNotEmpty() firstName: string;
     @IsString() @IsNotEmpty() lastName: string;
     @IsEnum(UserRole) @IsOptional() role?: UserRole;
+    @IsString() @IsOptional() roleId?: string;
 }
 
 export class UpdateUserRoleDto {
-    @IsEnum(UserRole) role: UserRole;
+    @IsEnum(UserRole) @IsOptional() role?: UserRole;
+    @IsString() @IsOptional() roleId?: string;
 }
 
 export class UserResponseDto {
