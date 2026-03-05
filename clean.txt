@@ -1,0 +1,114 @@
+﻿[Nest] 16196  - 05/03/2026, 12:49:12 p.┬ám.     LOG [NestFactory] Starting Nest application...
+[Nest] 16196  - 05/03/2026, 12:49:12 p.┬ám.     LOG [InstanceLoader] AppModule dependencies initialized +2ms
+[Nest] 16196  - 05/03/2026, 12:49:12 p.┬ám.     LOG [InstanceLoader] MongooseModule dependencies initialized +0ms
+[Nest] 16196  - 05/03/2026, 12:49:12 p.┬ám.     LOG [InstanceLoader] PassportModule dependencies initialized +0ms
+[Nest] 16196  - 05/03/2026, 12:49:12 p.┬ám.     LOG [InstanceLoader] ConfigHostModule dependencies initialized +0ms
+[Nest] 16196  - 05/03/2026, 12:49:12 p.┬ám.     LOG [InstanceLoader] ThrottlerModule dependencies initialized +0ms
+[Nest] 16196  - 05/03/2026, 12:49:12 p.┬ám.     LOG [InstanceLoader] ConfigModule dependencies initialized +0ms
+[Nest] 16196  - 05/03/2026, 12:49:12 p.┬ám.     LOG [InstanceLoader] ConfigModule dependencies initialized +0ms
+node : [Nest] 
+16196  - 
+05/03/2026, 
+12:49:12 p.┬ám.   
+ERROR [Ex
+ceptionHandler] 
+Error: CERTIFICATE
+_ENCRYPTION_KEY must 
+be at least 32 bytes 
+(64 hex chars)
+En línea: 1 Carácter: 1
++ node dist/main.js > 
+out.log 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: ([Nest] 1   
+ 61... (64 hex char    
+s):String) [], Rem    
+oteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+    at new 
+AesEncryptorService [9
+0m(C:\Users\Celred\Desk
+top\PROYECT\FACTURAYA_B
+ACKEND_FRONTEND\backend
+_factuya\dist\infr
+astructure\security\aes
+-encryptor.service.js:5
+7:19)
+    at Injector.instant
+iateClass (C:\User
+s\Celred\Desktop\PROYEC
+T\FACTURAYA_BACKEND_FRO
+NTEND\backend_factuya\
+[39mnode_modules\@n
+estjs\core\injecto
+r\injector.js:422:19[9
+0m)
+    at callback (C
+:\Users\Celred\Desktop\
+PROYECT\FACTURAYA_BACKE
+ND_FRONTEND\backend_fac
+tuya\node_modules\
+@nestjs\core\i
+njector\injector.js:70:
+45)
+    at async Injector.r
+esolveConstructorParams
+ (C:\Users\Celred\
+Desktop\PROYECT\FACTURA
+YA_BACKEND_FRONTEND\bac
+kend_factuya\node_
+modules\@nestjs\cor
+e\injector\injecto
+r.js:170:24)
+    at async 
+Injector.loadInstance 
+[90m(C:\Users\Celred\De
+sktop\PROYECT\FACTURAYA
+_BACKEND_FRONTEND\backe
+nd_factuya\node_mo
+dules\@nestjs\core
+[24m\injector\injector.
+js:75:13)
+    at async 
+Injector.loadProvider 
+[90m(C:\Users\Celred\De
+sktop\PROYECT\FACTURAYA
+_BACKEND_FRONTEND\backe
+nd_factuya\node_mo
+dules\@nestjs\core
+[24m\injector\injector.
+js:103:9)
+    at async C:\Us
+ers\Celred\Desktop\PROY
+ECT\FACTURAYA_BACKEND_F
+RONTEND\backend_factuya
+\node_modules\
+@nestjs\core\injec
+tor\instance-loader.js:
+56:13
+    at async 
+Promise.all (index 9)
+    at async InstanceLo
+ader.createInstancesOfP
+roviders (C:\Users
+\Celred\Desktop\PROYECT
+\FACTURAYA_BACKEND_FRON
+TEND\backend_factuya\[
+39mnode_modules\@ne
+stjs\core\injector
+\instance-loader.js:55:
+9)
+    at async C:\Us
+ers\Celred\Desktop\PROY
+ECT\FACTURAYA_BACKEND_F
+RONTEND\backend_factuya
+\node_modules\
+@nestjs\core\injec
+tor\instance-loader.js:
+40:13
