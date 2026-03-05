@@ -258,6 +258,11 @@ export class SendToDianUseCase {
                 signedXml,
                 companyNit: company.nit.raw,
                 softwareId: dian.softwareId!,
+                certificateData: {
+                    encryptedP12: cert.encryptedP12,
+                    encryptionIV: cert.encryptionIV,
+                    certPassword: cert.certPassword,
+                }
             });
 
             // 7. Actualizar estado según respuesta DIAN

@@ -13,6 +13,7 @@ export class DianMockClient implements IDianClient {
         signedXml: string;
         companyNit: string;
         softwareId: string;
+        certificateData: { encryptedP12: string; encryptionIV: string; certPassword: string; };
     }): Promise<DianResponse> {
         // Simula un delay de red
         await new Promise(resolve => setTimeout(resolve, 300));

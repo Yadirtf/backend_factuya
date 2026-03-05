@@ -11,7 +11,8 @@ import { CustomerRepositoryImpl } from '@infrastructure/repositories/customer.re
 import { CompanyRepositoryImpl } from '@infrastructure/repositories/company.repository.impl';
 import { CertificateRepositoryImpl } from '@infrastructure/repositories/certificate.repository.impl';
 
-import { DianMockClient } from '@infrastructure/external/dian/dian-mock.client';
+import { DianSoapClient } from '@infrastructure/external/dian/dian-soap.client';
+import { WsSecuritySignerService } from '@infrastructure/security/wsse-signer.service';
 import { Ubl21GeneratorService } from '@infrastructure/external/xml/ubl21-generator.service';
 import { XadesSignerService } from '@infrastructure/security/xades-signer.service';
 import { AesEncryptorService } from '@infrastructure/security/aes-encryptor.service';
@@ -42,7 +43,8 @@ import { TOKENS } from '@shared/constants/tokens';
         { provide: TOKENS.COMPANY_REPOSITORY, useClass: CompanyRepositoryImpl },
         { provide: TOKENS.CERTIFICATE_REPOSITORY, useClass: CertificateRepositoryImpl },
         // Servicios externos
-        { provide: TOKENS.DIAN_CLIENT, useClass: DianMockClient },
+        { provide: TOKENS.DIAN_CLIENT, useClass: DianSoapClient },
+        WsSecuritySignerService,
         { provide: TOKENS.XML_GENERATOR, useClass: Ubl21GeneratorService },
         { provide: TOKENS.CERTIFICATE_ENCRYPTOR, useClass: AesEncryptorService },
         {
