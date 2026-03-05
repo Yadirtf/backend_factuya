@@ -3,12 +3,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CertificateRepository } from '@domain/repositories/certificate.repository';
 import { Certificate } from '@domain/entities/certificate.entity';
-import { CertificateDocument } from '@infrastructure/database/schemas/certificate.schema';
+import { CertificateDocument, CertificateHydratedDocument } from '@infrastructure/database/schemas/certificate.schema';
 
 @Injectable()
 export class CertificateRepositoryImpl implements CertificateRepository {
     constructor(
-        @InjectModel(CertificateDocument.name) private readonly model: Model<CertificateDocument>,
+        @InjectModel(CertificateDocument.name) private readonly model: Model<CertificateHydratedDocument>,
     ) { }
 
     async create(cert: Certificate): Promise<Certificate> {
@@ -44,7 +44,7 @@ export class CertificateRepositoryImpl implements CertificateRepository {
         };
     }
 
-    private toDomain(doc: CertificateDocument): Certificate {
+    private toDomain(doc: CertificateHydratedDocument): Certificate {
         return Certificate.reconstitute({
             id: doc._id.toString(), companyId: doc.companyId,
             encryptedP12: doc.encryptedP12, encryptionIV: doc.encryptionIV,

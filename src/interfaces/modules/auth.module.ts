@@ -13,7 +13,7 @@ import { UserRepositoryImpl } from '@infrastructure/repositories/user.repository
 import { CompanyRepositoryImpl } from '@infrastructure/repositories/company.repository.impl';
 
 // Use Cases
-import { LoginUseCase, LogoutUseCase, RegisterCompanyUseCase } from '@application/use-cases/auth/auth.use-case';
+import { LoginUseCase, LogoutUseCase, RegisterCompanyUseCase, CheckSetupUseCase } from '@application/use-cases/auth/auth.use-case';
 
 // Infrastructure
 import { JwtStrategy } from '@infrastructure/security/jwt.strategy';
@@ -47,6 +47,7 @@ import { TOKENS } from '@shared/constants/tokens';
         LoginUseCase,
         LogoutUseCase,
         RegisterCompanyUseCase,
+        CheckSetupUseCase,
         JwtStrategy,
     ],
     exports: [TOKENS.USER_REPOSITORY, TOKENS.COMPANY_REPOSITORY, JwtModule],

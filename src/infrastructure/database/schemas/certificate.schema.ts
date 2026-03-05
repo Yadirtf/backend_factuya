@@ -1,8 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { HydratedDocument } from 'mongoose';
+
+export type CertificateHydratedDocument = HydratedDocument<CertificateDocument>;
 
 @Schema({ collection: 'certificates' })
-export class CertificateDocument extends Document {
+export class CertificateDocument {
+    @Prop({ type: String }) _id: string;
     @Prop({ required: true, index: true }) companyId: string;
     @Prop({ required: true }) encryptedP12: string;
     @Prop({ required: true }) encryptionIV: string;

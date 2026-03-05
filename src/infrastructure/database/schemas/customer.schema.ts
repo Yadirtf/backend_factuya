@@ -1,8 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { HydratedDocument } from 'mongoose';
+
+export type CustomerHydratedDocument = HydratedDocument<CustomerDocument>;
 
 @Schema({ timestamps: true, collection: 'customers' })
-export class CustomerDocument extends Document {
+export class CustomerDocument {
+    @Prop({ type: String }) _id: string;
     @Prop({ required: true, index: true }) companyId: string;
     @Prop({ required: true, enum: ['13', '31', '22', '41', '12', '50'] }) documentType: string;
     @Prop({ required: true }) documentNumber: string;

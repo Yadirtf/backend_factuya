@@ -2,7 +2,7 @@ import {
     Controller, Post, Body, HttpCode, HttpStatus, Get, UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { LoginUseCase, LogoutUseCase, RegisterCompanyUseCase } from '@application/use-cases/auth/auth.use-case';
+import { LoginUseCase, LogoutUseCase, RegisterCompanyUseCase, CheckSetupUseCase } from '@application/use-cases/auth/auth.use-case';
 import { LoginDto, RegisterCompanyDto } from '@application/dtos/auth/auth.dto';
 import { JwtAuthGuard } from '../http/guards/jwt-auth.guard';
 import { CurrentUser } from '../http/decorators/current-user.decorator';
@@ -15,7 +15,14 @@ export class AuthController {
         private readonly loginUseCase: LoginUseCase,
         private readonly logoutUseCase: LogoutUseCase,
         private readonly registerUseCase: RegisterCompanyUseCase,
+        private readonly checkSetupUseCase: CheckSetupUseCase,
     ) { }
+
+    @Get('setup-status')
+    @ApiOperation({ summary: 'Check if the system is already initialized' })
+    async setupStatus() {
+        return this.checkSetupUseCase.execute();
+    }
 
     @Post('register')
     @ApiOperation({ summary: 'Register a new company with admin user' })

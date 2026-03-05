@@ -9,13 +9,13 @@ import { Cufe } from '@domain/value-objects/cufe.vo';
 import { InvoiceType } from '@domain/enums/invoice-type.enum';
 import { InvoiceStatus } from '@domain/enums/invoice-status.enum';
 import { TaxType } from '@domain/enums/tax-type.enum';
-import { InvoiceDocument } from '@infrastructure/database/schemas/invoice.schema';
+import { InvoiceDocument, InvoiceHydratedDocument } from '@infrastructure/database/schemas/invoice.schema';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class InvoiceRepositoryImpl implements InvoiceRepository {
     constructor(
-        @InjectModel(InvoiceDocument.name) private readonly model: Model<InvoiceDocument>,
+        @InjectModel(InvoiceDocument.name) private readonly model: Model<InvoiceHydratedDocument>,
     ) { }
 
     async create(invoice: Invoice): Promise<Invoice> {
@@ -96,7 +96,7 @@ export class InvoiceRepositoryImpl implements InvoiceRepository {
         };
     }
 
-    private toDomain(doc: InvoiceDocument): Invoice {
+    private toDomain(doc: InvoiceHydratedDocument): Invoice {
         const items: InvoiceItem[] = (doc.items as any[]).map(item => {
             const taxes: Tax[] = (item.taxes ?? []).map((t: any) =>
                 Tax.reconstitute({ type: t.type as TaxType, rate: t.rate, base: Money.of(t.base), amount: Money.of(t.amount) })

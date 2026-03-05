@@ -1,5 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { HydratedDocument } from 'mongoose';
+
+export type InvoiceHydratedDocument = HydratedDocument<InvoiceDocument>;
 
 @Schema({ _id: false })
 class TaxSubDoc {
@@ -9,8 +11,9 @@ class TaxSubDoc {
     @Prop({ required: true }) amount: number;
 }
 
-@Schema({ _id: true })
+@Schema({ _id: false })
 class InvoiceItemSubDoc {
+    @Prop({ type: String }) _id: string;
     @Prop({ required: true }) productCode: string;
     @Prop({ required: true }) description: string;
     @Prop({ required: true }) quantity: number;
@@ -23,7 +26,8 @@ class InvoiceItemSubDoc {
 }
 
 @Schema({ timestamps: true, collection: 'invoices' })
-export class InvoiceDocument extends Document {
+export class InvoiceDocument {
+    @Prop({ type: String }) _id: string;
     @Prop({ required: true, index: true }) companyId: string;
     @Prop({ required: true }) number: string;
     @Prop({ required: true }) prefix: string;

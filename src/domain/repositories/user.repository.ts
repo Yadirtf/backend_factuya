@@ -8,4 +8,5 @@ export interface UserRepository {
     findAll(companyId: string): Promise<User[]>;
     update(user: User): Promise<User>;
     updateRefreshToken(userId: string, token: string | null): Promise<void>;
+    countAdmins(): Promise<number>;
 }

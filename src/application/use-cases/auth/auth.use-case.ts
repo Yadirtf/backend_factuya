@@ -128,3 +128,15 @@ export class LogoutUseCase {
         await this.userRepo.updateRefreshToken(userId, null);
     }
 }
+
+@Injectable()
+export class CheckSetupUseCase {
+    constructor(
+        @Inject(TOKENS.USER_REPOSITORY) private readonly userRepo: UserRepository,
+    ) { }
+
+    async execute(): Promise<{ initialized: boolean }> {
+        const count = await this.userRepo.countAdmins();
+        return { initialized: count > 0 };
+    }
+}

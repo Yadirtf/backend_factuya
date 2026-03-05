@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, MinLength, IsOptional, IsEnum } from 'class-validator';
 
 export class LoginDto {
     @IsEmail()
@@ -31,14 +31,14 @@ export class RefreshTokenDto {
 export class RegisterCompanyDto {
     @IsString() @IsNotEmpty() nit: string;
     @IsString() @IsNotEmpty() businessName: string;
-    @IsString() tradeName?: string;
+    @IsString() @IsOptional() tradeName?: string;
     @IsEmail() email: string;
     @IsString() @IsNotEmpty() phone: string;
     @IsString() @IsNotEmpty() address: string;
     @IsString() @IsNotEmpty() city: string;
     @IsString() @IsNotEmpty() department: string;
     @IsString() @IsNotEmpty() economicActivity: string;
-    taxRegime: 'SIMPLIFIED' | 'COMMON' = 'COMMON';
+    @IsEnum(['SIMPLIFIED', 'COMMON']) taxRegime: 'SIMPLIFIED' | 'COMMON' = 'COMMON';
     // Admin del sistema
     @IsString() @IsNotEmpty() adminFirstName: string;
     @IsString() @IsNotEmpty() adminLastName: string;

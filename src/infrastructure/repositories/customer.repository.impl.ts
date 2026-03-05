@@ -4,12 +4,12 @@ import { Model } from 'mongoose';
 import { CustomerRepository } from '@domain/repositories/customer.repository';
 import { Customer } from '@domain/entities/customer.entity';
 import { DocumentType } from '@domain/enums/document-type.enum';
-import { CustomerDocument } from '@infrastructure/database/schemas/customer.schema';
+import { CustomerDocument, CustomerHydratedDocument } from '@infrastructure/database/schemas/customer.schema';
 
 @Injectable()
 export class CustomerRepositoryImpl implements CustomerRepository {
     constructor(
-        @InjectModel(CustomerDocument.name) private readonly model: Model<CustomerDocument>,
+        @InjectModel(CustomerDocument.name) private readonly model: Model<CustomerHydratedDocument>,
     ) { }
 
     async create(customer: Customer): Promise<Customer> {
@@ -58,7 +58,7 @@ export class CustomerRepositoryImpl implements CustomerRepository {
         };
     }
 
-    private toDomain(doc: CustomerDocument): Customer {
+    private toDomain(doc: CustomerHydratedDocument): Customer {
         return Customer.reconstitute({
             id: doc._id.toString(), companyId: doc.companyId,
             documentType: doc.documentType as DocumentType,

@@ -3,12 +3,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CompanyRepository } from '@domain/repositories/company.repository';
 import { Company, DianConfig } from '@domain/entities/company.entity';
-import { CompanyDocument } from '@infrastructure/database/schemas/company.schema';
+import { CompanyDocument, CompanyHydratedDocument } from '@infrastructure/database/schemas/company.schema';
 
 @Injectable()
 export class CompanyRepositoryImpl implements CompanyRepository {
     constructor(
-        @InjectModel(CompanyDocument.name) private readonly model: Model<CompanyDocument>,
+        @InjectModel(CompanyDocument.name) private readonly model: Model<CompanyHydratedDocument>,
     ) { }
 
     async create(company: Company): Promise<Company> {
@@ -59,7 +59,7 @@ export class CompanyRepositoryImpl implements CompanyRepository {
         };
     }
 
-    private toDomain(doc: CompanyDocument): Company {
+    private toDomain(doc: CompanyHydratedDocument): Company {
         return Company.reconstitute({
             id: doc._id.toString(),
             nit: doc.nit,

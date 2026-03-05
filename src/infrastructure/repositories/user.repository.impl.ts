@@ -4,12 +4,12 @@ import { Model } from 'mongoose';
 import { UserRepository } from '@domain/repositories/user.repository';
 import { User } from '@domain/entities/user.entity';
 import { UserRole } from '@domain/enums/user-role.enum';
-import { UserDocument } from '@infrastructure/database/schemas/user.schema';
+import { UserDocument, UserHydratedDocument } from '@infrastructure/database/schemas/user.schema';
 
 @Injectable()
 export class UserRepositoryImpl implements UserRepository {
     constructor(
-        @InjectModel(UserDocument.name) private readonly model: Model<UserDocument>,
+        @InjectModel(UserDocument.name) private readonly model: Model<UserHydratedDocument>,
     ) { }
 
     async create(user: User): Promise<User> {
@@ -48,6 +48,12 @@ export class UserRepositoryImpl implements UserRepository {
         await this.model.findByIdAndUpdate(userId, { refreshToken: token }).exec();
     }
 
+    async countAdmins(): Promise<number> {
+        return this.model.countDocuments({
+            role: { $in: [UserRole.ADMIN, UserRole.SUPER_ADMIN] }
+        }).exec();
+    }
+
     private toDocument(user: User): Record<string, unknown> {
         return {
             _id: user.id,
@@ -62,7 +68,7 @@ export class UserRepositoryImpl implements UserRepository {
         };
     }
 
-    private toDomain(doc: UserDocument): User {
+    private toDomain(doc: UserHydratedDocument): User {
         return User.reconstitute({
             id: doc._id.toString(),
             companyId: doc.companyId,
