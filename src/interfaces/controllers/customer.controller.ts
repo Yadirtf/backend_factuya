@@ -1,6 +1,6 @@
 import { Controller, Post, Get, Body, Param, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../http/guards/jwt-auth.guard';
+import { MainAuthGuard } from '../http/guards/main-auth.guard';
 import { RolesGuard } from '../http/guards/roles.guard';
 import { Roles } from '../http/decorators/roles.decorator';
 import { CurrentUser } from '../http/decorators/current-user.decorator';
@@ -13,7 +13,7 @@ import { CreateCustomerDto } from '@application/dtos/customer/customer.dto';
 
 @ApiTags('Customers')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(MainAuthGuard, RolesGuard)
 @Controller('customers')
 export class CustomerController {
     constructor(

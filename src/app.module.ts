@@ -7,6 +7,8 @@ import { InvoiceModule } from './interfaces/modules/invoice.module';
 import { CustomerModule } from './interfaces/modules/customer.module';
 import { UserModule } from './interfaces/modules/user.module';
 import { CompanyModule } from './interfaces/modules/company.module';
+import { ApiKeyModule } from './interfaces/modules/api-key.module';
+import { WebhookModule } from './interfaces/modules/webhook.module';
 
 @Module({
   imports: [
@@ -31,6 +33,8 @@ import { CompanyModule } from './interfaces/modules/company.module';
     CustomerModule,
     UserModule,
     CompanyModule,
+    ApiKeyModule,
+    WebhookModule,
   ],
 })
 export class AppModule { }

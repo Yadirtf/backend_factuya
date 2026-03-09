@@ -22,6 +22,10 @@ export class RolesGuard implements CanActivate {
         // SUPER_ADMIN tiene acceso total
         if (user.role === UserRole.SUPER_ADMIN) return true;
 
+        // Si es una máquina autenticada por API Key, se permite (los permisos de la API Key se validarían en otro lado si existieran)
+        const isMachine = (user as any).isMachine;
+        if (isMachine) return true;
+
         if (!requiredRoles.includes(user.role)) {
             throw new ForbiddenException(`Role ${user.role} is not allowed. Required: ${requiredRoles.join(', ')}`);
         }

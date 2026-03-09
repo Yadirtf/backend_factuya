@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { AuthModule } from './auth.module';
+import { WebhookModule } from './webhook.module';
 
 import { InvoiceDocument, InvoiceSchema } from '@infrastructure/database/schemas/invoice.schema';
 import { CustomerDocument, CustomerSchema } from '@infrastructure/database/schemas/customer.schema';
@@ -34,6 +36,8 @@ import { TOKENS } from '@shared/constants/tokens';
             { name: CompanyDocument.name, schema: CompanySchema },
             { name: CertificateDocument.name, schema: CertificateSchema },
         ]),
+        AuthModule,
+        WebhookModule,
     ],
     controllers: [InvoiceController],
     providers: [

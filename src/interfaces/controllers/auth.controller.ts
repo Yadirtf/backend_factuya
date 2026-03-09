@@ -2,8 +2,8 @@ import {
     Controller, Post, Body, HttpCode, HttpStatus, Get, UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { LoginUseCase, LogoutUseCase, RegisterCompanyUseCase, CheckSetupUseCase } from '@application/use-cases/auth/auth.use-case';
-import { LoginDto, RegisterCompanyDto } from '@application/dtos/auth/auth.dto';
+import { LoginUseCase, LogoutUseCase, SetupSuperAdminUseCase, CheckSetupUseCase } from '@application/use-cases/auth/auth.use-case';
+import { LoginDto, SetupSuperAdminDto } from '@application/dtos/auth/auth.dto';
 import { JwtAuthGuard } from '../http/guards/jwt-auth.guard';
 import { CurrentUser } from '../http/decorators/current-user.decorator';
 import { JwtPayload } from '@application/use-cases/auth/auth.use-case';
@@ -14,7 +14,7 @@ export class AuthController {
     constructor(
         private readonly loginUseCase: LoginUseCase,
         private readonly logoutUseCase: LogoutUseCase,
-        private readonly registerUseCase: RegisterCompanyUseCase,
+        private readonly setupUseCase: SetupSuperAdminUseCase,
         private readonly checkSetupUseCase: CheckSetupUseCase,
     ) { }
 
@@ -24,10 +24,10 @@ export class AuthController {
         return this.checkSetupUseCase.execute();
     }
 
-    @Post('register')
-    @ApiOperation({ summary: 'Register a new company with admin user' })
-    async register(@Body() dto: RegisterCompanyDto) {
-        return this.registerUseCase.execute(dto);
+    @Post('setup')
+    @ApiOperation({ summary: 'Initial setup of the SuperAdmin' })
+    async setup(@Body() dto: SetupSuperAdminDto) {
+        return this.setupUseCase.execute(dto);
     }
 
     @Post('login')

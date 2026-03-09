@@ -7,7 +7,7 @@ import {
     SendToDianUseCase, CancelInvoiceUseCase,
 } from '@application/use-cases/invoice/invoice.use-case';
 import { CreateInvoiceDto } from '@application/dtos/invoice/invoice.dto';
-import { JwtAuthGuard } from '../http/guards/jwt-auth.guard';
+import { MainAuthGuard } from '../http/guards/main-auth.guard';
 import { RolesGuard } from '../http/guards/roles.guard';
 import { Roles } from '../http/decorators/roles.decorator';
 import { CurrentUser } from '../http/decorators/current-user.decorator';
@@ -17,7 +17,7 @@ import { InvoiceStatus } from '@domain/enums/invoice-status.enum';
 
 @ApiTags('Invoices')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(MainAuthGuard, RolesGuard)
 @Controller('invoices')
 export class InvoiceController {
     constructor(
@@ -43,11 +43,13 @@ export class InvoiceController {
         @Query('from') from?: string,
         @Query('to') to?: string,
         @Query('customerId') customerId?: string,
+        @Query('companyId') paramCompanyId?: string,
         @Query('page') page?: string,
         @Query('limit') limit?: string,
     ) {
+        const targetCompanyId = (user.role === UserRole.SUPER_ADMIN && paramCompanyId) ? paramCompanyId : user.companyId;
         return this.getInvoices.execute(
-            user.companyId,
+            targetCompanyId,
             { status, from, to, customerId },
             page ? parseInt(page) : 1,
             limit ? parseInt(limit) : 20,
@@ -56,8 +58,9 @@ export class InvoiceController {
 
     @Get(':id')
     @ApiOperation({ summary: 'Get invoice by ID' })
-    findOne(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
-        return this.getInvoiceById.execute(id, user.companyId);
+    findOne(@Param('id') id: string, @Query('companyId') paramCompanyId: string, @CurrentUser() user: JwtPayload) {
+        const targetCompanyId = (user.role === UserRole.SUPER_ADMIN && paramCompanyId) ? paramCompanyId : user.companyId;
+        return this.getInvoiceById.execute(id, targetCompanyId);
     }
 
     @Post(':id/send-to-dian')

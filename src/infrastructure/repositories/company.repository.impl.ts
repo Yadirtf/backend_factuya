@@ -34,9 +34,10 @@ export class CompanyRepositoryImpl implements CompanyRepository {
     }
 
     async findAll(page = 1, limit = 20): Promise<{ data: Company[]; total: number }> {
+        const query = { nit: { $ne: '000000000-0' } };
         const [docs, total] = await Promise.all([
-            this.model.find().skip((page - 1) * limit).limit(limit).exec(),
-            this.model.countDocuments(),
+            this.model.find(query).skip((page - 1) * limit).limit(limit).exec(),
+            this.model.countDocuments(query),
         ]);
         return { data: docs.map(d => this.toDomain(d)), total };
     }

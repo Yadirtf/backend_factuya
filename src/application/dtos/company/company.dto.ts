@@ -1,5 +1,18 @@
-import { IsString, IsOptional, IsBoolean, IsObject } from 'class-validator';
+import { IsString, IsOptional, IsBoolean, IsObject, IsNotEmpty, IsEmail, IsEnum } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+
+export class CreateCompanyDto {
+    @IsString() @IsNotEmpty() nit: string;
+    @IsString() @IsNotEmpty() businessName: string;
+    @IsString() @IsOptional() tradeName?: string;
+    @IsEmail() @IsOptional() email?: string;
+    @IsString() @IsNotEmpty() phone: string;
+    @IsString() @IsNotEmpty() address: string;
+    @IsString() @IsNotEmpty() city: string;
+    @IsString() @IsNotEmpty() department: string;
+    @IsString() @IsNotEmpty() economicActivity: string;
+    @IsEnum(['SIMPLIFIED', 'COMMON']) taxRegime: 'SIMPLIFIED' | 'COMMON' = 'COMMON';
+}
 
 export class UpdateCompanyDto {
     @ApiPropertyOptional()
@@ -46,4 +59,9 @@ export class UpdateCompanyDto {
     @IsOptional()
     @IsBoolean()
     isActive?: boolean;
+
+    @ApiPropertyOptional({ description: 'Opcional, usado por SUPER_ADMIN para modificar datos de otra empresa' })
+    @IsOptional()
+    @IsString()
+    companyId?: string;
 }

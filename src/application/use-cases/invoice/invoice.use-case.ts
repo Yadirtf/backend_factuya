@@ -20,6 +20,8 @@ import {
 import { TOKENS } from '@shared/constants/tokens';
 import { NotFoundException } from '@shared/exceptions/not-found.exception';
 import { DomainException } from '@shared/exceptions/domain.exception';
+import { WebhookService } from '@application/services/webhook.service';
+import { WebhookEvent } from '@domain/entities/webhook.entity';
 
 /** Mapper simple de Invoice → DTO de respuesta */
 const toResponse = (inv: Invoice): InvoiceResponseDto => ({
@@ -65,6 +67,7 @@ export class CreateInvoiceUseCase {
         @Inject(TOKENS.INVOICE_REPOSITORY) private readonly invoiceRepo: InvoiceRepository,
         @Inject(TOKENS.CUSTOMER_REPOSITORY) private readonly customerRepo: CustomerRepository,
         @Inject(TOKENS.COMPANY_REPOSITORY) private readonly companyRepo: CompanyRepository,
+        private readonly webhooks: WebhookService,
     ) { }
 
     async execute(dto: CreateInvoiceDto, companyId: string): Promise<InvoiceResponseDto> {
@@ -109,6 +112,10 @@ export class CreateInvoiceUseCase {
         });
 
         const saved = await this.invoiceRepo.create(invoice);
+
+        // Notify webhook
+        this.webhooks.notify(companyId, WebhookEvent.INVOICE_CREATED, toResponse(saved));
+
         return toResponse(saved);
     }
 }
@@ -172,6 +179,7 @@ export class SendToDianUseCase {
         @Inject(TOKENS.SIGNER_SERVICE) private readonly signer: ISignerService,
         @Inject(TOKENS.DIAN_CLIENT) private readonly dianClient: IDianClient,
         private readonly cufeCalc: CufeCalculatorService,
+        private readonly webhooks: WebhookService,
     ) { }
 
     async execute(invoiceId: string, companyId: string): Promise<InvoiceResponseDto> {
@@ -274,7 +282,13 @@ export class SendToDianUseCase {
             }
 
             const updated = await this.invoiceRepo.update(invoice);
-            return toResponse(updated);
+            const response = toResponse(updated);
+
+            // Notify webhooks
+            const event = dianResponse.isAccepted ? WebhookEvent.INVOICE_ACCEPTED : WebhookEvent.INVOICE_REJECTED;
+            this.webhooks.notify(companyId, event, response);
+
+            return response;
         } catch (error) {
             // Si hay error técnico, regresamos a DRAFT para permitir reintento
             invoice.markAsRejected(error instanceof Error ? error.message : 'Unknown error');

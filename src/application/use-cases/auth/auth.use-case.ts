@@ -11,7 +11,7 @@ import { User } from '@domain/entities/user.entity';
 import { Person } from '@domain/entities/person.entity';
 import { Role, Permission } from '@domain/entities/role.entity';
 import { UserRole } from '@domain/enums/user-role.enum';
-import { LoginDto, TokenResponseDto, RegisterCompanyDto } from '../../dtos/auth/auth.dto';
+import { LoginDto, TokenResponseDto, SetupSuperAdminDto } from '../../dtos/auth/auth.dto';
 import { TOKENS } from '@shared/constants/tokens';
 import { UnauthorizedException } from '@shared/exceptions/unauthorized.exception';
 import { DomainException } from '@shared/exceptions/domain.exception';
@@ -89,7 +89,7 @@ export class LoginUseCase {
 }
 
 @Injectable()
-export class RegisterCompanyUseCase {
+export class SetupSuperAdminUseCase {
     constructor(
         @Inject(TOKENS.COMPANY_REPOSITORY) private readonly companyRepo: CompanyRepository,
         @Inject(TOKENS.USER_REPOSITORY) private readonly userRepo: UserRepository,
@@ -97,35 +97,34 @@ export class RegisterCompanyUseCase {
         @Inject(TOKENS.ROLE_REPOSITORY) private readonly roleRepo: RoleRepository,
     ) { }
 
-    async execute(dto: RegisterCompanyDto): Promise<{ companyId: string; userId: string }> {
-        const existing = await this.companyRepo.findByNit(dto.nit);
-        if (existing) {
-            throw new DomainException(`Company with NIT ${dto.nit} already exists`);
+    async execute(dto: SetupSuperAdminDto): Promise<{ companyId: string; userId: string }> {
+        const adminCount = await this.userRepo.countAdmins();
+        if (adminCount > 0) {
+            throw new DomainException('System is already initialized. Cannot run setup again.');
         }
 
-        // 1. Crear Compañía
+        // 1. Crear Organización Principal (Master Orchestrator)
         const company = Company.create({
             id: uuidv4(),
-            nit: dto.nit,
-            businessName: dto.businessName,
-            email: dto.email,
-            address: dto.address,
-            city: dto.city,
-            department: dto.department,
-            taxRegime: dto.taxRegime,
-            economicActivity: dto.economicActivity,
-            phone: dto.phone,
-            tradeName: dto.tradeName,
+            nit: '000000000-0', // Default para el master
+            businessName: 'FactuYa App Core',
+            email: dto.adminEmail,
+            address: 'Plataforma Digital',
+            city: 'N/A',
+            department: 'N/A',
+            taxRegime: 'COMMON',
+            economicActivity: '0000',
+            phone: '0000000000',
         });
         const savedCompany = await this.companyRepo.create(company);
 
-        // 2. Crear Rol Admin para la Compañía
+        // 2. Crear Rol SuperAdmin
         const adminRole = Role.create({
             id: uuidv4(),
             companyId: savedCompany.id,
-            name: 'Administrador',
-            code: 'ADMIN',
-            permissions: Object.values(Permission), // Full permissions for initial admin
+            name: 'Super Administrador',
+            code: 'SUPER_ADMIN', // Critical change for UI access
+            permissions: Object.values(Permission),
         });
         const savedRole = await this.roleRepo.create(adminRole);
 

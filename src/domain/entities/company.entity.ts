@@ -151,4 +151,24 @@ export class Company {
         this._isActive = false;
         this._updatedAt = new Date();
     }
+
+    toJSON() {
+        return {
+            id: this.id,
+            nit: { raw: this.nit.raw, checkDigit: this.nit.checkDigit },
+            businessName: this.businessName,
+            email: { raw: this.email.raw },
+            address: this.address,
+            city: this.city,
+            department: this.department,
+            taxRegime: this.taxRegime,
+            economicActivity: this.economicActivity,
+            phone: this.phone,
+            tradeName: this.tradeName,
+            dianConfig: this.dianConfig,
+            isActive: this.isActive,
+            createdAt: this.createdAt,
+            updatedAt: this.updatedAt,
+        };
+    }
 }

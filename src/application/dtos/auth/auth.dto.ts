@@ -28,18 +28,7 @@ export class RefreshTokenDto {
     refreshToken: string;
 }
 
-export class RegisterCompanyDto {
-    @IsString() @IsNotEmpty() nit: string;
-    @IsString() @IsNotEmpty() businessName: string;
-    @IsString() @IsOptional() tradeName?: string;
-    @IsEmail() email: string;
-    @IsString() @IsNotEmpty() phone: string;
-    @IsString() @IsNotEmpty() address: string;
-    @IsString() @IsNotEmpty() city: string;
-    @IsString() @IsNotEmpty() department: string;
-    @IsString() @IsNotEmpty() economicActivity: string;
-    @IsEnum(['SIMPLIFIED', 'COMMON']) taxRegime: 'SIMPLIFIED' | 'COMMON' = 'COMMON';
-    // Admin del sistema
+export class SetupSuperAdminDto {
     @IsString() @IsNotEmpty() adminFirstName: string;
     @IsString() @IsNotEmpty() adminLastName: string;
     @IsEmail() adminEmail: string;

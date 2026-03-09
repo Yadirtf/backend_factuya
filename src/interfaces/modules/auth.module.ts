@@ -15,13 +15,19 @@ import { CompanyRepositoryImpl } from '@infrastructure/repositories/company.repo
 import { RoleRepositoryImpl, PersonRepositoryImpl } from '@infrastructure/repositories/person-role.repository.impl';
 
 // Use Cases
-import { LoginUseCase, LogoutUseCase, RegisterCompanyUseCase, CheckSetupUseCase } from '@application/use-cases/auth/auth.use-case';
+import { LoginUseCase, LogoutUseCase, SetupSuperAdminUseCase, CheckSetupUseCase } from '@application/use-cases/auth/auth.use-case';
 
 // Infrastructure
 import { JwtStrategy } from '@infrastructure/security/jwt.strategy';
+import { JwtAuthGuard } from '../http/guards/jwt-auth.guard';
+import { ApiKeyGuard } from '../http/guards/api-key.guard';
+import { MainAuthGuard } from '../http/guards/main-auth.guard';
 
 // Controller
 import { AuthController } from '../controllers/auth.controller';
+
+// Feature Modules
+import { ApiKeyModule } from './api-key.module';
 
 // Tokens
 import { TOKENS } from '@shared/constants/tokens';
@@ -34,6 +40,7 @@ import { TOKENS } from '@shared/constants/tokens';
             { name: RoleDocument.name, schema: RoleSchema },
             { name: PersonDocument.name, schema: PersonSchema },
         ]),
+        ApiKeyModule,
         PassportModule,
         JwtModule.registerAsync({
             imports: [ConfigModule],
@@ -52,16 +59,22 @@ import { TOKENS } from '@shared/constants/tokens';
         { provide: TOKENS.PERSON_REPOSITORY, useClass: PersonRepositoryImpl },
         LoginUseCase,
         LogoutUseCase,
-        RegisterCompanyUseCase,
+        SetupSuperAdminUseCase,
         CheckSetupUseCase,
         JwtStrategy,
+        JwtAuthGuard,
+        ApiKeyGuard,
+        MainAuthGuard,
     ],
     exports: [
         TOKENS.USER_REPOSITORY,
         TOKENS.COMPANY_REPOSITORY,
         TOKENS.ROLE_REPOSITORY,
         TOKENS.PERSON_REPOSITORY,
-        JwtModule
+        JwtModule,
+        JwtAuthGuard,
+        ApiKeyGuard,
+        MainAuthGuard,
     ],
 })
 export class AuthModule { }

@@ -7,7 +7,7 @@ import { CompanyRepositoryImpl } from '@infrastructure/repositories/company.repo
 import { CertificateRepositoryImpl } from '@infrastructure/repositories/certificate.repository.impl';
 import { AesEncryptorService } from '@infrastructure/security/aes-encryptor.service';
 import { TOKENS } from '@shared/constants/tokens';
-import { GetCompanyUseCase, UpdateCompanyUseCase } from '@application/use-cases/company/company.use-case';
+import { GetCompanyUseCase, UpdateCompanyUseCase, GetCompaniesUseCase, CreateCompanyUseCase } from '@application/use-cases/company/company.use-case';
 import { UploadCertificateUseCase } from '@application/use-cases/company/upload-certificate.use-case';
 
 @Module({
@@ -22,7 +22,9 @@ import { UploadCertificateUseCase } from '@application/use-cases/company/upload-
         { provide: TOKENS.COMPANY_REPOSITORY, useClass: CompanyRepositoryImpl },
         { provide: TOKENS.CERTIFICATE_REPOSITORY, useClass: CertificateRepositoryImpl },
         { provide: TOKENS.CERTIFICATE_ENCRYPTOR, useClass: AesEncryptorService },
+        CreateCompanyUseCase,
         GetCompanyUseCase,
+        GetCompaniesUseCase,
         UpdateCompanyUseCase,
         UploadCertificateUseCase
     ],
