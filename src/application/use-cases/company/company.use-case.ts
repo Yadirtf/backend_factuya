@@ -84,6 +84,7 @@ export class UpdateCompanyUseCase {
     ) { }
 
     async execute(input: UpdateCompanyInput): Promise<Company> {
+        console.log('UpdateCompanyUseCase INPUT:', input);
         const company = await this.companyRepo.findById(input.companyId);
         if (!company) {
             throw new NotFoundException('Company not found');
@@ -92,8 +93,11 @@ export class UpdateCompanyUseCase {
         company.updateProfile(input);
 
         if (input.dianConfig) {
+            console.log('UpdateCompanyUseCase updating dianConfig:', input.dianConfig);
             company.updateDianConfig(input.dianConfig);
         }
+
+        console.log('UpdateCompanyUseCase Company BEFORE update:', company.dianConfig);
         return this.companyRepo.update(company);
     }
 }
