@@ -17,8 +17,10 @@ export class CustomerRepositoryImpl implements CustomerRepository {
         return this.toDomain(doc);
     }
 
-    async findById(id: string, companyId: string): Promise<Customer | null> {
-        const doc = await this.model.findOne({ _id: id, companyId }).exec();
+    async findById(id: string, companyId?: string | null): Promise<Customer | null> {
+        const query: Record<string, unknown> = { _id: id };
+        if (companyId) query.companyId = companyId;
+        const doc = await this.model.findOne(query).exec();
         return doc ? this.toDomain(doc) : null;
     }
 
@@ -27,8 +29,10 @@ export class CustomerRepositoryImpl implements CustomerRepository {
         return doc ? this.toDomain(doc) : null;
     }
 
-    async findAll(companyId: string, search?: string, page = 1, limit = 20): Promise<{ data: Customer[]; total: number }> {
-        const query: Record<string, unknown> = { companyId };
+    async findAll(companyId?: string | null, search?: string, page = 1, limit = 20): Promise<{ data: Customer[]; total: number }> {
+        const query: Record<string, unknown> = {};
+        if (companyId) query.companyId = companyId;
+        
         if (search) {
             query.$or = [
                 { firstName: { $regex: search, $options: 'i' } },

@@ -30,6 +30,7 @@ export class CreateInvoiceDto {
     @IsArray() @ArrayMinSize(1) @ValidateNested({ each: true }) @Type(() => InvoiceItemDto)
     items: InvoiceItemDto[];
     @IsString() @IsOptional() notes?: string;
+    @IsString() @IsOptional() companyId?: string;
 }
 
 export class InvoiceItemResponseDto {

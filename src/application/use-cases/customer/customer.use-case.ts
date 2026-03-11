@@ -47,7 +47,7 @@ export class GetCustomersUseCase {
         @Inject(TOKENS.CUSTOMER_REPOSITORY) private readonly repo: CustomerRepository,
     ) { }
 
-    async execute(companyId: string, search?: string, page = 1, limit = 20) {
+    async execute(companyId?: string | null, search?: string, page = 1, limit = 20) {
         const result = await this.repo.findAll(companyId, search, page, limit);
         return { data: result.data.map(toCustomerResponse), total: result.total };
     }
@@ -59,7 +59,7 @@ export class GetCustomerByIdUseCase {
         @Inject(TOKENS.CUSTOMER_REPOSITORY) private readonly repo: CustomerRepository,
     ) { }
 
-    async execute(id: string, companyId: string): Promise<CustomerResponseDto> {
+    async execute(id: string, companyId?: string | null): Promise<CustomerResponseDto> {
         const customer = await this.repo.findById(id, companyId);
         if (!customer) throw new NotFoundException('Customer');
         return toCustomerResponse(customer);

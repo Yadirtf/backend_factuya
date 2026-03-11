@@ -29,10 +29,11 @@ export class InvoiceController {
     ) { }
 
     @Post()
-    @Roles(UserRole.ADMIN, UserRole.OPERATOR, UserRole.ACCOUNTANT)
+    @Roles(UserRole.ADMIN, UserRole.OPERATOR, UserRole.ACCOUNTANT, UserRole.SUPER_ADMIN)
     @ApiOperation({ summary: 'Create a new invoice (DRAFT)' })
     create(@Body() dto: CreateInvoiceDto, @CurrentUser() user: JwtPayload) {
-        return this.createInvoice.execute(dto, user.companyId);
+        const targetCompanyId = (user.role === UserRole.SUPER_ADMIN && dto.companyId) ? dto.companyId : user.companyId;
+        return this.createInvoice.execute(dto, targetCompanyId);
     }
 
     @Get()
@@ -59,7 +60,7 @@ export class InvoiceController {
     @Get(':id')
     @ApiOperation({ summary: 'Get invoice by ID' })
     findOne(@Param('id') id: string, @Query('companyId') paramCompanyId: string, @CurrentUser() user: JwtPayload) {
-        const targetCompanyId = (user.role === UserRole.SUPER_ADMIN && paramCompanyId) ? paramCompanyId : user.companyId;
+        const targetCompanyId = user.role === UserRole.SUPER_ADMIN ? (paramCompanyId || null) : user.companyId;
         return this.getInvoiceById.execute(id, targetCompanyId);
     }
 

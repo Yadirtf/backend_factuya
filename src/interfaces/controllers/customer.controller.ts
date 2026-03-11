@@ -23,21 +23,24 @@ export class CustomerController {
     ) { }
 
     @Post()
-    @Roles(UserRole.ADMIN, UserRole.OPERATOR)
+    @Roles(UserRole.ADMIN, UserRole.OPERATOR, UserRole.SUPER_ADMIN)
     create(@Body() dto: CreateCustomerDto, @CurrentUser() user: JwtPayload) {
-        return this.createCustomer.execute(dto, user.companyId);
+        const targetCompanyId = (user.role === UserRole.SUPER_ADMIN && dto.companyId) ? dto.companyId : user.companyId;
+        return this.createCustomer.execute(dto, targetCompanyId);
     }
 
     @Get()
-    @Roles(UserRole.ADMIN, UserRole.OPERATOR, UserRole.ACCOUNTANT)
+    @Roles(UserRole.ADMIN, UserRole.OPERATOR, UserRole.ACCOUNTANT, UserRole.SUPER_ADMIN)
     findAll(
         @CurrentUser() user: JwtPayload,
         @Query('search') search?: string,
+        @Query('companyId') paramCompanyId?: string,
         @Query('page') page?: string,
         @Query('limit') limit?: string,
     ) {
+        const targetCompanyId = (user.role === UserRole.SUPER_ADMIN && paramCompanyId) ? paramCompanyId : user.companyId;
         return this.getCustomers.execute(
-            user.companyId,
+            targetCompanyId,
             search,
             page ? parseInt(page, 10) : 1,
             limit ? parseInt(limit, 10) : 20
@@ -45,8 +48,9 @@ export class CustomerController {
     }
 
     @Get(':id')
-    @Roles(UserRole.ADMIN, UserRole.OPERATOR, UserRole.ACCOUNTANT)
-    findOne(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
-        return this.getCustomerById.execute(id, user.companyId);
+    @Roles(UserRole.ADMIN, UserRole.OPERATOR, UserRole.ACCOUNTANT, UserRole.SUPER_ADMIN)
+    findOne(@Param('id') id: string, @Query('companyId') paramCompanyId: string, @CurrentUser() user: JwtPayload) {
+        const targetCompanyId = user.role === UserRole.SUPER_ADMIN ? (paramCompanyId || null) : user.companyId;
+        return this.getCustomerById.execute(id, targetCompanyId);
     }
 }

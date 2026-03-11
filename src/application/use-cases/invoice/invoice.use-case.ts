@@ -160,7 +160,7 @@ export class GetInvoiceByIdUseCase {
         @Inject(TOKENS.INVOICE_REPOSITORY) private readonly invoiceRepo: InvoiceRepository,
     ) { }
 
-    async execute(id: string, companyId: string): Promise<InvoiceResponseDto> {
+    async execute(id: string, companyId?: string | null): Promise<InvoiceResponseDto> {
         const invoice = await this.invoiceRepo.findById(id, companyId);
         if (!invoice) throw new NotFoundException('Invoice');
         return toResponse(invoice);

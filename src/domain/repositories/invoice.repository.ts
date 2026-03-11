@@ -17,7 +17,7 @@ export interface PaginatedResult<T> {
 
 export interface InvoiceRepository {
     create(invoice: Invoice): Promise<Invoice>;
-    findById(id: string, companyId: string): Promise<Invoice | null>;
+    findById(id: string, companyId?: string | null): Promise<Invoice | null>;
     findAll(companyId: string, filters?: InvoiceFilters, page?: number, limit?: number): Promise<PaginatedResult<Invoice>>;
     update(invoice: Invoice): Promise<Invoice>;
     /** Obtiene y reserva el siguiente número consecutivo de factura (atómico) */

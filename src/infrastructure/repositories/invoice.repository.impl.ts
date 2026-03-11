@@ -23,8 +23,10 @@ export class InvoiceRepositoryImpl implements InvoiceRepository {
         return this.toDomain(doc);
     }
 
-    async findById(id: string, companyId: string): Promise<Invoice | null> {
-        const doc = await this.model.findOne({ _id: id, companyId }).exec();
+    async findById(id: string, companyId?: string | null): Promise<Invoice | null> {
+        const query: Record<string, unknown> = { _id: id };
+        if (companyId) query.companyId = companyId;
+        const doc = await this.model.findOne(query).exec();
         return doc ? this.toDomain(doc) : null;
     }
 

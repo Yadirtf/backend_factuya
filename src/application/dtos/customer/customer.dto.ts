@@ -12,6 +12,7 @@ export class CreateCustomerDto {
     @IsString() @IsNotEmpty() address: string;
     @IsString() @IsNotEmpty() city: string;
     @IsString() @IsNotEmpty() department: string;
+    @IsString() @IsOptional() companyId?: string;
 }
 
 export class UpdateCustomerDto {
