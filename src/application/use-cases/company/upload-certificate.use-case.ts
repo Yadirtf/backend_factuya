@@ -23,11 +23,41 @@ export class UploadCertificateUseCase {
         // Encriptar el certificado P12
         const { encrypted, iv } = this.encryptor.encrypt(input.p12Buffer);
 
-        // TODO: extraer validFrom, validTo, issuedBy del certificado P12 usando node-forge o crypto
-        // Por simplificación en este nivel, definiremos un mock de validez
-        const validFrom = new Date();
-        const validTo = new Date();
-        validTo.setFullYear(validTo.getFullYear() + 2);
+        // Extraer validTo y issuedBy del certificado P12
+        let validFrom = new Date();
+        let validTo = new Date();
+        validTo.setFullYear(validTo.getFullYear() + 2); // Default fallback
+        let issuedBy = 'DIAN/Auto-Mock';
+
+        try {
+            // Se usa eval('require') para evitar problemas con TS y node-forge si no está tipado completamente, 
+            // aunque podemos usar import * as forge from 'node-forge' si estuviera arriba. Lo importaré localmente:
+            const forge = require('node-forge');
+            const p12Asn1 = forge.asn1.fromDer(input.p12Buffer.toString('binary'));
+            const p12 = forge.pkcs12.pkcs12FromAsn1(p12Asn1, false, input.password);
+            
+            // Buscar en las bolsas (safe bags) para encontrar el certificado
+            for (const safeBags of p12.safeContents) {
+                for (const safeBag of safeBags.safeBags) {
+                    if (safeBag.cert) {
+                        validFrom = safeBag.cert.validity.notBefore;
+                        validTo = safeBag.cert.validity.notAfter;
+                        
+                        const issuerItem = safeBag.cert.issuer.attributes.find((a: any) => a.shortName === 'CN');
+                        if (issuerItem) {
+                            issuedBy = issuerItem.value;
+                        }
+                        break;
+                    }
+                }
+            }
+        } catch (error) {
+            throw new Error(`Contraseña incorrecta o certificado P12 inválido: ${error.message}`);
+        }
+
+        if (validTo < new Date()) {
+            throw new Error('El certificado digital se encuentra vencido.');
+        }
 
         const passwordHash = crypto.createHash('sha256').update(input.password).digest('hex');
 
@@ -42,7 +72,7 @@ export class UploadCertificateUseCase {
             certPassword: passwordHash, // Se guarda el hash en la DB, no el texto plano
             validFrom,
             validTo,
-            issuedBy: 'DIAN/Auto-Mock',
+            issuedBy,
         });
 
         return this.certRepo.create(cert);

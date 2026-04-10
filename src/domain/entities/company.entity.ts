@@ -21,14 +21,20 @@ export class Company {
     private constructor(
         public readonly id: string,
         private _nit: Nit,
+        private _dv: string,
+        private _documentType: string,
+        private _organizationType: number,
         private _businessName: string,
         private _email: Email,
+        private _phone: string,
         private _address: string,
+        private _postalCode: string,
         private _city: string,
         private _department: string,
         private _taxRegime: TaxRegime,
+        private _taxResponsibilities: string[],
         private _economicActivity: string,
-        private _phone: string,
+        private _mercantileRegistration: string,
         private _tradeName: string | undefined,
         private _dianConfig: DianConfig,
         private _isActive: boolean,
@@ -39,14 +45,20 @@ export class Company {
     static create(params: {
         id: string;
         nit: string;
+        dv: string;
+        documentType: string;
+        organizationType: number;
         businessName: string;
         email: string;
+        phone: string;
         address: string;
+        postalCode: string;
         city: string;
         department: string;
         taxRegime: TaxRegime;
+        taxResponsibilities: string[];
         economicActivity: string;
-        phone: string;
+        mercantileRegistration: string;
         tradeName?: string;
     }): Company {
         if (!params.businessName || params.businessName.trim().length < 3) {
@@ -55,14 +67,20 @@ export class Company {
         return new Company(
             params.id,
             Nit.create(params.nit),
+            params.dv,
+            params.documentType,
+            params.organizationType,
             params.businessName.trim(),
             Email.create(params.email),
+            params.phone,
             params.address,
+            params.postalCode,
             params.city,
             params.department,
             params.taxRegime,
+            params.taxResponsibilities,
             params.economicActivity,
-            params.phone,
+            params.mercantileRegistration,
             params.tradeName,
             { isTestEnvironment: true },
             true,
@@ -74,14 +92,20 @@ export class Company {
     static reconstitute(params: {
         id: string;
         nit: string;
+        dv: string;
+        documentType: string;
+        organizationType: number;
         businessName: string;
         email: string;
+        phone: string;
         address: string;
+        postalCode: string;
         city: string;
         department: string;
         taxRegime: TaxRegime;
+        taxResponsibilities: string[];
         economicActivity: string;
-        phone: string;
+        mercantileRegistration: string;
         tradeName?: string;
         dianConfig: DianConfig;
         isActive: boolean;
@@ -91,14 +115,20 @@ export class Company {
         return new Company(
             params.id,
             Nit.create(params.nit),
+            params.dv,
+            params.documentType,
+            params.organizationType,
             params.businessName,
             Email.create(params.email),
+            params.phone,
             params.address,
+            params.postalCode,
             params.city,
             params.department,
             params.taxRegime,
+            params.taxResponsibilities,
             params.economicActivity,
-            params.phone,
+            params.mercantileRegistration,
             params.tradeName,
             params.dianConfig,
             params.isActive,
@@ -108,14 +138,20 @@ export class Company {
     }
 
     get nit(): Nit { return this._nit; }
+    get dv(): string { return this._dv; }
+    get documentType(): string { return this._documentType; }
+    get organizationType(): number { return this._organizationType; }
     get businessName(): string { return this._businessName; }
     get email(): Email { return this._email; }
+    get phone(): string { return this._phone; }
     get address(): string { return this._address; }
+    get postalCode(): string { return this._postalCode; }
     get city(): string { return this._city; }
     get department(): string { return this._department; }
     get taxRegime(): TaxRegime { return this._taxRegime; }
+    get taxResponsibilities(): string[] { return this._taxResponsibilities; }
     get economicActivity(): string { return this._economicActivity; }
-    get phone(): string { return this._phone; }
+    get mercantileRegistration(): string { return this._mercantileRegistration; }
     get tradeName(): string | undefined { return this._tradeName; }
     get dianConfig(): DianConfig { return this._dianConfig; }
     get isActive(): boolean { return this._isActive; }
@@ -130,19 +166,25 @@ export class Company {
         businessName?: string;
         tradeName?: string;
         address?: string;
+        postalCode?: string;
         city?: string;
         department?: string;
         phone?: string;
+        taxResponsibilities?: string[];
         economicActivity?: string;
+        mercantileRegistration?: string;
         isActive?: boolean;
     }): void {
         if (params.businessName) this._businessName = params.businessName;
         if (params.tradeName !== undefined) this._tradeName = params.tradeName;
         if (params.address) this._address = params.address;
+        if (params.postalCode) this._postalCode = params.postalCode;
         if (params.city) this._city = params.city;
         if (params.department) this._department = params.department;
         if (params.phone) this._phone = params.phone;
+        if (params.taxResponsibilities) this._taxResponsibilities = params.taxResponsibilities;
         if (params.economicActivity) this._economicActivity = params.economicActivity;
+        if (params.mercantileRegistration) this._mercantileRegistration = params.mercantileRegistration;
         if (params.isActive !== undefined) this._isActive = params.isActive;
         this._updatedAt = new Date();
     }
@@ -156,14 +198,20 @@ export class Company {
         return {
             id: this.id,
             nit: { raw: this.nit.raw, checkDigit: this.nit.checkDigit },
+            dv: this.dv,
+            documentType: this.documentType,
+            organizationType: this.organizationType,
             businessName: this.businessName,
             email: { raw: this.email.raw },
+            phone: this.phone,
             address: this.address,
+            postalCode: this.postalCode,
             city: this.city,
             department: this.department,
             taxRegime: this.taxRegime,
+            taxResponsibilities: this.taxResponsibilities,
             economicActivity: this.economicActivity,
-            phone: this.phone,
+            mercantileRegistration: this.mercantileRegistration,
             tradeName: this.tradeName,
             dianConfig: this.dianConfig,
             isActive: this.isActive,

@@ -21,14 +21,20 @@ export class CreateCompanyUseCase {
         const company = Company.create({
             id: uuidv4(),
             nit: dto.nit,
+            dv: dto.dv,
+            documentType: dto.documentType,
+            organizationType: dto.organizationType,
             businessName: dto.businessName,
             email: dto.email || 'no-reply@facturaya.com',
+            phone: dto.phone,
             address: dto.address,
+            postalCode: dto.postalCode,
             city: dto.city,
             department: dto.department,
             taxRegime: dto.taxRegime,
+            taxResponsibilities: dto.taxResponsibilities,
             economicActivity: dto.economicActivity,
-            phone: dto.phone,
+            mercantileRegistration: dto.mercantileRegistration,
             tradeName: dto.tradeName,
         });
 

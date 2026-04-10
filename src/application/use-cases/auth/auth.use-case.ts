@@ -107,14 +107,20 @@ export class SetupSuperAdminUseCase {
         const company = Company.create({
             id: uuidv4(),
             nit: '000000000-0', // Default para el master
+            dv: '0',
+            documentType: '31', // NIT
+            organizationType: 2, // Persona Juridica (Core App)
             businessName: 'FactuYa App Core',
             email: dto.adminEmail,
+            phone: '0000000000',
             address: 'Plataforma Digital',
+            postalCode: '000000',
             city: 'N/A',
             department: 'N/A',
             taxRegime: 'COMMON',
+            taxResponsibilities: ['O-13'], // Gran contribuyente o similar placeholder
             economicActivity: '0000',
-            phone: '0000000000',
+            mercantileRegistration: '00000000',
         });
         const savedCompany = await this.companyRepo.create(company);
 
